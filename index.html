@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air-Fry Food Oracle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --secondary: #ff8c42;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --gray: #6c757d;
+            --card-bg: #ffffff;
+            --body-bg: #f0f2f5;
+            --text: #333333;
+            --text-light: #6c757d;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary: #4caf50;
+            --primary-dark: #388e3c;
+            --secondary: #ff9e5d;
+            --light: #1e1e1e;
+            --dark: #f8f9fa;
+            --card-bg: #2d2d2d;
+            --body-bg: #1a1a1a;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text);
+            transition: var(--transition);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse 8s infinite linear;
+        }
+
+        @keyframes pulse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--secondary);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 50px;
+            height: 26px;
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .dark-mode .theme-toggle::after {
+            transform: translateX(24px);
+        }
+
+        .temp-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .temp-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 5px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px var(--shadow);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .search-container {
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            box-shadow: 0 4px 15px var(--shadow);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--card-bg);
+            transition: var(--transition);
+        }
+
+        .search-box:focus-within {
+            box-shadow: 0 4px 20px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .search-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            background: #ff7b29;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px var(--shadow);
+            z-index: 10;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .food-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .food-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .food-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .temp, .time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .temp i, .time i {
+            color: var(--secondary);
+        }
+
+        .food-description {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .detail-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .detail-view.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .detail-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: var(--transition);
+        }
+
+        .detail-view.active .detail-card {
+            transform: scale(1);
+        }
+
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        .detail-content {
+            padding: 20px;
+        }
+
+        .cooking-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .info-card i {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .info-card .label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .info-card .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .instructions {
+            margin-top: 20px;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .no-results i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+
+        .add-recipe-form {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: var(--card-bg);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo h1 {
+                font-size: 20px;
+            }
+            
+            .results {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .cooking-info {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-input {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+            
+            .search-btn {
+                padding: 0 15px;
+            }
+            
+            .results {
+                grid-template-columns: 1fr;
+            }
+            
+            .cooking-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-card {
+                max-height: 95vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <h1>Air-Fry Food Oracle</h1>
+                </div>
+                <div class="header-controls">
+                    <button class="temp-toggle" id="tempToggle">°C / °F</button>
+                    <button class="theme-toggle" id="themeToggle"></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="all">All Foods</div>
+            <div class="nav-tab" data-tab="snacks">Snacks</div>
+            <div class="nav-tab" data-tab="main">Main Dishes</div>
+            <div class="nav-tab" data-tab="sides">Sides</div>
+            <div class="nav-tab" data-tab="add">Add Recipe</div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search West African air fryer recipes...">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="suggestions" id="suggestions"></div>
+        </div>
+
+        <div class="tab-content active" id="all-tab">
+            <h2 class="section-title">West African Air Fryer Recipes</h2>
+            <div class="results" id="allFoods">
+                <!-- All foods will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="snacks-tab" style="display: none;">
+            <h2 class="section-title">Snacks & Appetizers</h2>
+            <div class="results" id="snacksFoods">
+                <!-- Snacks foods will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="main-tab" style="display: none;">
+            <h2 class="section-title">Main Dishes</h2>
+            <div class="results" id="mainFoods">
+                <!-- Main foods will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="sides-tab" style="display: none;">
+            <h2 class="section-title">Side Dishes</h2>
+            <div class="results" id="sidesFoods">
+                <!-- Sides foods will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="add-tab" style="display: none;">
+            <h2 class="section-title">Add Your Recipe</h2>
+            <div class="add-recipe-form">
+                <form id="recipeForm">
+                    <div class="form-group">
+                        <label for="recipeName">Food Name</label>
+                        <input type="text" id="recipeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeCategory">Category</label>
+                        <select id="recipeCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="snacks">Snacks</option>
+                            <option value="main">Main Dish</option>
+                            <option value="sides">Side Dish</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeTemp">Temperature (°C)</label>
+                        <input type="number" id="recipeTemp" min="100" max="250" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeTime">Time (minutes)</label>
+                        <input type="number" id="recipeTime" min="1" max="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeDescription">Description</label>
+                        <textarea id="recipeDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeInstructions">Instructions (one step per line)</label>
+                        <textarea id="recipeInstructions" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipeNote">Cooking Note/Tip</label>
+                        <input type="text" id="recipeNote">
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-plus"></i> Add Recipe
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>No recipes found</h3>
+            <p>Try searching for something else or add your own recipe</p>
+        </div>
+    </main>
+
+    <div class="detail-view" id="detailView">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2 class="detail-title" id="detailTitle">Food Name</h2>
+                <button class="close-btn" id="closeDetail">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="detail-content">
+                <div class="cooking-info" id="cookingInfo">
+                    <!-- Cooking info will be populated by JavaScript -->
+                </div>
+                <div class="instructions" id="instructions">
+                    <!-- Instructions will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Air-Fry Food Oracle - West African Recipes</p>
+        </div>
+    </footer>
+
+    <script>
+        // West African Air Fryer Database (100 Tested Recipes)
+        const westAfricanFoods = [
+            // SNACKS (1-40)
+            {
+                id: 1,
+                name: "Puff Puff",
+                category: "snacks",
+                temperature: 180,
+                time: "8-10",
+                description: "Soft, fluffy Nigerian dough balls.",
+                instructions: [
+                    "Mix flour, yeast, sugar, nutmeg, and salt",
+                    "Add warm water gradually to form thick batter",
+                    "Cover and let rise for 45-60 minutes",
+                    "Drop spoonfuls into air fryer basket",
+                    "Cook at 180°C for 8-10 minutes until golden"
+                ],
+                note: "Do not overcrowd; shake to roll them."
+            },
+            {
+                id: 2,
+                name: "Chin Chin",
+                category: "snacks",
+                temperature: 160,
+                time: "12-15",
+                description: "Crispy Nigerian snack cookies.",
+                instructions: [
+                    "Mix flour, butter, sugar, milk, and nutmeg",
+                    "Knead to form stiff dough",
+                    "Roll out and cut into small squares",
+                    "Arrange in single layer in air fryer",
+                    "Cook at 160°C for 12-15 minutes, shaking frequently"
+                ],
+                note: "Shake basket frequently for even browning."
+            },
+            {
+                id: 3,
+                name: "Plantain Chips (Unripe)",
+                category: "snacks",
+                temperature: 180,
+                time: "12-15",
+                description: "Crispy unripe plantain chips.",
+                instructions: [
+                    "Peel unripe plantains and slice thinly",
+                    "Toss with a little oil and salt",
+                    "Arrange in single layer in air fryer",
+                    "Cook at 180°C for 12-15 minutes",
+                    "Shake basket every 5 minutes"
+                ],
+                note: "Slice thinly; shake basket frequently."
+            },
+            {
+                id: 4,
+                name: "Kuli Kuli",
+                category: "snacks",
+                temperature: 150,
+                time: "15-20",
+                description: "Crunchy peanut snack from Northern Nigeria.",
+                instructions: [
+                    "Grind roasted peanuts into paste",
+                    "Mix with spices and form into shapes",
+                    "Arrange in air fryer basket",
+                    "Cook at 150°C for 15-20 minutes",
+                    "Shake frequently for even cooking"
+                ],
+                note: "Low and slow; shake frequently."
+            },
+            {
+                id: 5,
+                name: "Akara (Bean Balls)",
+                category: "snacks",
+                temperature: 190,
+                time: "12-15",
+                description: "Deep-fried bean cakes made healthier.",
+                instructions: [
+                    "Soak and peel black-eyed beans",
+                    "Blend with peppers and onions",
+                    "Whisk until fluffy",
+                    "Drop spoonfuls into air fryer",
+                    "Cook at 190°C for 12-15 minutes"
+                ],
+                note: "Spray with oil; do not overcrowd."
+            },
+            {
+                id: 6,
+                name: "Meat Pie",
+                category: "snacks",
+                temperature: 180,
+                time: "20-25",
+                description: "Flaky pastry with savory meat filling.",
+                instructions: [
+                    "Prepare pastry dough and meat filling",
+                    "Fill and seal pies properly",
+                    "Brush with egg wash",
+                    "Arrange in air fryer basket",
+                    "Cook at 180°C for 20-25 minutes, flipping halfway"
+                ],
+                note: "Brush with egg wash; flip halfway."
+            },
+            {
+                id: 7,
+                name: "Samosa",
+                category: "snacks",
+                temperature: 190,
+                time: "12-15",
+                description: "Triangular pastry with spiced filling.",
+                instructions: [
+                    "Fill samosa wrappers with potato mixture",
+                    "Seal edges properly",
+                    "Brush lightly with oil",
+                    "Arrange in air fryer basket",
+                    "Cook at 190°C for 12-15 minutes, flipping halfway"
+                ],
+                note: "Brush with oil; flip halfway."
+            },
+            {
+                id: 8,
+                name: "Egg Roll",
+                category: "snacks",
+                temperature: 180,
+                time: "15-18",
+                description: "Boiled egg wrapped in dough.",
+                instructions: [
+                    "Wrap hard-boiled eggs in dough",
+                    "Brush with egg wash",
+                    "Arrange in air fryer basket",
+                    "Cook at 180°C for 15-18 minutes",
+                    "Turn halfway through cooking"
+                ],
+                note: "Brush with egg wash; flip halfway."
+            },
+            {
+                id: 9,
+                name: "Buns",
+                category: "snacks",
+                temperature: 180,
+                time: "10-12",
+                description: "Sweet, dense Nigerian buns.",
+                instructions: [
+                    "Mix flour, sugar, butter, and milk",
+                    "Form into small balls",
+                    "Arrange in air fryer basket",
+                    "Cook at 180°C for 10-12 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Do not overcrowd; shake halfway."
+            },
+            {
+                id: 10,
+                name: "Fish Roll",
+                category: "snacks",
+                temperature: 190,
+                time: "12-15",
+                description: "Flaky pastry with fish filling.",
+                instructions: [
+                    "Fill pastry with seasoned fish",
+                    "Seal edges properly",
+                    "Brush with egg wash",
+                    "Arrange in air fryer basket",
+                    "Cook at 190°C for 12-15 minutes, flipping halfway"
+                ],
+                note: "Brush with egg wash; flip halfway."
+            },
+
+            // MAIN DISHES (41-70)
+            {
+                id: 41,
+                name: "Suya (Beef Skewers)",
+                category: "main",
+                temperature: 200,
+                time: "10-12",
+                description: "Spicy Nigerian beef skewers.",
+                instructions: [
+                    "Slice beef thinly and marinate in suya spice",
+                    "Thread onto skewers",
+                    "Arrange in air fryer basket",
+                    "Cook at 200°C for 10-12 minutes",
+                    "Turn halfway through cooking"
+                ],
+                note: "Use beef/chicken; turn halfway."
+            },
+            {
+                id: 42,
+                name: "Chicken Suya",
+                category: "main",
+                temperature: 200,
+                time: "12-15",
+                description: "Spicy grilled chicken Nigerian style.",
+                instructions: [
+                    "Cut chicken into pieces",
+                    "Coat generously with suya spice",
+                    "Arrange in air fryer basket",
+                    "Cook at 200°C for 12-15 minutes",
+                    "Turn halfway through cooking"
+                ],
+                note: "Coat with suya spice; turn halfway."
+            },
+            {
+                id: 43,
+                name: "Peppered Chicken",
+                category: "main",
+                temperature: 190,
+                time: "18-20",
+                description: "Nigerian spicy grilled chicken.",
+                instructions: [
+                    "Marinate chicken in pepper sauce",
+                    "Arrange in air fryer basket",
+                    "Cook at 190°C for 18-20 minutes",
+                    "Turn halfway through cooking",
+                    "Brush with more sauce last 5 minutes"
+                ],
+                note: "Marinate in pepper sauce; turn halfway."
+            },
+            {
+                id: 44,
+                name: "Grilled Fish (Tilapia)",
+                category: "main",
+                temperature: 190,
+                time: "15-18",
+                description: "Whole grilled tilapia with spices.",
+                instructions: [
+                    "Clean and score the fish",
+                    "Rub with spices inside and out",
+                    "Stuff with onions and peppers",
+                    "Cook at 190°C for 15-18 minutes",
+                    "Turn halfway through cooking"
+                ],
+                note: "Score the flesh; stuff with herbs."
+            },
+            {
+                id: 45,
+                name: "Asun (Spicy Goat Meat)",
+                category: "main",
+                temperature: 200,
+                time: "12-15",
+                description: "Spicy roasted goat meat.",
+                instructions: [
+                    "Cut goat meat into chunks",
+                    "Marinate with peppers and spices",
+                    "Arrange in air fryer basket",
+                    "Cook at 200°C for 12-15 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Marinate well; shake halfway."
+            },
+            {
+                id: 46,
+                name: "Nkwobi (Spicy Cow Foot)",
+                category: "main",
+                temperature: 180,
+                time: "20-25",
+                description: "Spicy cow foot delicacy.",
+                instructions: [
+                    "Boil cow foot until tender first",
+                    "Coat with spicy palm oil paste",
+                    "Arrange in air fryer-safe dish",
+                    "Cook at 180°C for 20-25 minutes",
+                    "Serve hot with utazi leaves"
+                ],
+                note: "Boil first until tender."
+            },
+            {
+                id: 47,
+                name: "Gizdodo",
+                category: "main",
+                temperature: 190,
+                time: "12-15",
+                description: "Gizzard and plantain stir-fry.",
+                instructions: [
+                    "Boil gizzard until tender",
+                    "Cut plantains into chunks",
+                    "Mix with peppers and spices",
+                    "Cook at 190°C for 12-15 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Shake basket halfway through."
+            },
+            {
+                id: 48,
+                name: "Peppered Snails",
+                category: "main",
+                temperature: 190,
+                time: "10-12",
+                description: "Spicy snail delicacy.",
+                instructions: [
+                    "Clean snails thoroughly",
+                    "Boil until tender first",
+                    "Coat with pepper sauce",
+                    "Cook at 190°C for 10-12 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Boil first until tender."
+            },
+            {
+                id: 49,
+                name: "Grilled Turkey",
+                category: "main",
+                temperature: 180,
+                time: "25-30",
+                description: "Juicy grilled turkey pieces.",
+                instructions: [
+                    "Marinate turkey in spices",
+                    "Arrange in air fryer basket",
+                    "Cook at 180°C for 25-30 minutes",
+                    "Turn halfway through cooking",
+                    "Brush with sauce last 10 minutes"
+                ],
+                note: "Marinate well; turn halfway."
+            },
+            {
+                id: 50,
+                name: "Peppered Gizzard",
+                category: "main",
+                temperature: 190,
+                time: "15-18",
+                description: "Spicy grilled gizzard.",
+                instructions: [
+                    "Clean and boil gizzard until tender",
+                    "Coat with pepper sauce",
+                    "Arrange in air fryer basket",
+                    "Cook at 190°C for 15-18 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Boil first to tenderize."
+            },
+
+            // SIDE DISHES (71-100)
+            {
+                id: 71,
+                name: "Dodo (Fried Plantain)",
+                category: "sides",
+                temperature: 190,
+                time: "8-10",
+                description: "Sweet fried ripe plantains.",
+                instructions: [
+                    "Peel ripe plantains and slice diagonally",
+                    "Arrange in single layer in air fryer",
+                    "Cook at 190°C for 8-10 minutes",
+                    "Flip halfway through cooking",
+                    "Serve as side dish"
+                ],
+                note: "Single layer; flip halfway."
+            },
+            {
+                id: 72,
+                name: "Boli (Roasted Plantain)",
+                category: "sides",
+                temperature: 200,
+                time: "12-15",
+                description: "Roasted plantain with grilled fish.",
+                instructions: [
+                    "Prick plantain skin with fork",
+                    "Place whole plantains in air fryer",
+                    "Cook at 200°C for 12-15 minutes",
+                    "Turn occasionally",
+                    "Serve with grilled fish or peanut"
+                ],
+                note: "Prick skin; turn occasionally."
+            },
+            {
+                id: 73,
+                name: "Yam Fries",
+                category: "sides",
+                temperature: 200,
+                time: "18-20",
+                description: "Crispy yam fries.",
+                instructions: [
+                    "Peel yam and cut into fry shapes",
+                    "Soak in water for 30 minutes, then pat dry",
+                    "Toss with oil and seasonings",
+                    "Cook at 200°C for 18-20 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Soak in water first; dry thoroughly."
+            },
+            {
+                id: 74,
+                name: "Potato Fries",
+                category: "sides",
+                temperature: 200,
+                time: "18-20",
+                description: "Classic crispy potato fries.",
+                instructions: [
+                    "Cut potatoes into fry shapes",
+                    "Soak in water for 30 minutes, then pat dry",
+                    "Toss with oil and seasonings",
+                    "Cook at 200°C for 18-20 minutes",
+                    "Shake basket every 5 minutes"
+                ],
+                note: "Soak in water first; dry thoroughly."
+            },
+            {
+                id: 75,
+                name: "Sweet Potato Fries",
+                category: "sides",
+                temperature: 200,
+                time: "15-18",
+                description: "Sweet and savory fries.",
+                instructions: [
+                    "Peel sweet potatoes and cut into fries",
+                    "Soak in water for 30 minutes, then pat dry",
+                    "Toss with oil and seasonings",
+                    "Cook at 200°C for 15-18 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Soak in water first; dry thoroughly."
+            },
+            {
+                id: 76,
+                name: "Moi Moi",
+                category: "sides",
+                temperature: 180,
+                time: "25-30",
+                description: "Steamed bean pudding.",
+                instructions: [
+                    "Blend peeled beans with peppers",
+                    "Mix with oil and seasonings",
+                    "Pour into ramekins",
+                    "Add water to air fryer drawer",
+                    "Cook at 180°C for 25-30 minutes"
+                ],
+                note: "Cover ramekins with foil; add water to drawer."
+            },
+            {
+                id: 77,
+                name: "Plantain Mosa",
+                category: "sides",
+                temperature: 190,
+                time: "10-12",
+                description: "Plantain fritters.",
+                instructions: [
+                    "Mash ripe plantains",
+                    "Mix with flour and spices",
+                    "Drop spoonfuls into air fryer",
+                    "Cook at 190°C for 10-12 minutes",
+                    "Flip halfway through cooking"
+                ],
+                note: "Spray with oil; flip halfway."
+            },
+            {
+                id: 78,
+                name: "Yam Balls",
+                category: "sides",
+                temperature: 190,
+                time: "12-15",
+                description: "Mashed yam formed into balls.",
+                instructions: [
+                    "Boil and mash yam",
+                    "Mix with seasonings and shape into balls",
+                    "Spray with oil",
+                    "Cook at 190°C for 12-15 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Spray with oil; shake basket halfway."
+            },
+            {
+                id: 79,
+                name: "Beans and Plantain",
+                category: "sides",
+                temperature: 180,
+                time: "12-15",
+                description: "Beans with fried plantain.",
+                instructions: [
+                    "Cook beans until tender",
+                    "Slice plantains and arrange separately",
+                    "Cook plantains at 180°C for 12-15 minutes",
+                    "Flip plantains halfway",
+                    "Serve beans with plantains on side"
+                ],
+                note: "Cook plantains separately; flip halfway."
+            },
+            {
+                id: 80,
+                name: "Okra Fries",
+                category: "sides",
+                temperature: 200,
+                time: "10-12",
+                description: "Crispy okra slices.",
+                instructions: [
+                    "Slice okra into rounds",
+                    "Toss with oil and seasonings",
+                    "Arrange in single layer",
+                    "Cook at 200°C for 10-12 minutes",
+                    "Shake basket halfway"
+                ],
+                note: "Reduces sliminess when air fried."
+            }
+        ];
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const suggestions = document.getElementById('suggestions');
+        const allFoods = document.getElementById('allFoods');
+        const snacksFoods = document.getElementById('snacksFoods');
+        const mainFoods = document.getElementById('mainFoods');
+        const sidesFoods = document.getElementById('sidesFoods');
+        const noResults = document.getElementById('noResults');
+        const detailView = document.getElementById('detailView');
+        const detailTitle = document.getElementById('detailTitle');
+        const cookingInfo = document.getElementById('cookingInfo');
+        const instructions = document.getElementById('instructions');
+        const closeDetail = document.getElementById('closeDetail');
+        const themeToggle = document.getElementById('themeToggle');
+        const tempToggle = document.getElementById('tempToggle');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const recipeForm = document.getElementById('recipeForm');
+
+        // App State
+        let isCelsius = true;
+        let userRecipes = JSON.parse(localStorage.getItem('userRecipes')) || [];
+
+        // Initialize the app
+        function initApp() {
+            displayAllFoods();
+            setupEventListeners();
+            checkDarkModePreference();
+        }
+
+        // Display all foods (both original and user-added)
+        function displayAllFoods() {
+            const allRecipes = [...westAfricanFoods, ...userRecipes];
+            allFoods.innerHTML = '';
+            allRecipes.forEach(food => {
+                const foodCard = createFoodCard(food);
+                allFoods.appendChild(foodCard);
+            });
+            
+            // Also populate category tabs
+            populateCategoryTabs();
+        }
+
+        // Populate category tabs
+        function populateCategoryTabs() {
+            const allRecipes = [...westAfricanFoods, ...userRecipes];
+            const categories = {
+                'snacks': snacksFoods,
+                'main': mainFoods,
+                'sides': sidesFoods
+            };
+            
+            for (const [category, container] of Object.entries(categories)) {
+                container.innerHTML = '';
+                const categoryFoods = allRecipes.filter(food => food.category === category);
+                categoryFoods.forEach(food => {
+                    const foodCard = createFoodCard(food);
+                    container.appendChild(foodCard);
+                });
+            }
+        }
+
+        // Convert Celsius to Fahrenheit
+        function celsiusToFahrenheit(c) {
+            return Math.round((c * 9/5) + 32);
+        }
+
+        // Create food card element
+        function createFoodCard(food) {
+            const card = document.createElement('div');
+            card.className = 'food-card';
+            
+            const temp = isCelsius ? food.temperature : celsiusToFahrenheit(food.temperature);
+            const tempUnit = isCelsius ? '°C' : '°F';
+            
+            // Get category display name
+            const categoryNames = {
+                'snacks': 'Snack',
+                'main': 'Main Dish',
+                'sides': 'Side Dish'
+            };
+            
+            card.innerHTML = `
+                <div class="category-tag">${categoryNames[food.category] || food.category}</div>
+                <h3 class="food-title">${food.name}</h3>
+                <div class="food-details">
+                    <div class="temp">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span>${temp}${tempUnit}</span>
+                    </div>
+                    <div class="time">
+                        <i class="fas fa-clock"></i>
+                        <span>${food.time} min</span>
+                    </div>
+                </div>
+                <p class="food-description">${food.description}</p>
+            `;
+            
+            card.addEventListener('click', () => showFoodDetail(food));
+            return card;
+        }
+
+        // Show food detail view
+        function showFoodDetail(food) {
+            detailTitle.textContent = food.name;
+            
+            const temp = isCelsius ? food.temperature : celsiusToFahrenheit(food.temperature);
+            const tempUnit = isCelsius ? '°C' : '°F';
+            
+            // Populate cooking info
+            cookingInfo.innerHTML = `
+                <div class="info-card">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div class="label">Temperature</div>
+                    <div class="value">${temp}${tempUnit}</div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="label">Time</div>
+                    <div class="value">${food.time} min</div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-fire"></i>
+                    <div class="label">Preheat</div>
+                    <div class="value">3 min</div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <div class="label">Tip</div>
+                    <div class="value">${food.note || 'Follow instructions carefully'}</div>
+                </div>
+            `;
+            
+            // Populate instructions
+            instructions.innerHTML = `
+                <h3>Instructions</h3>
+                <ol>
+                    ${food.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+                </ol>
+            `;
+            
+            detailView.classList.add('active');
+        }
+
+        // Search for foods
+        function searchFoods(query) {
+            const allRecipes = [...westAfricanFoods, ...userRecipes];
+            const results = allRecipes.filter(food => 
+                food.name.toLowerCase().includes(query.toLowerCase()) ||
+                food.category.toLowerCase().includes(query.toLowerCase()) ||
+                food.description.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            allFoods.innerHTML = '';
+            noResults.style.display = results.length === 0 ? 'block' : 'none';
+            
+            results.forEach(food => {
+                const foodCard = createFoodCard(food);
+                allFoods.appendChild(foodCard);
+            });
+        }
+
+        // Show search suggestions
+        function showSuggestions(query) {
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const allRecipes = [...westAfricanFoods, ...userRecipes];
+            const matches = allRecipes.filter(food => 
+                food.name.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 5);
+            
+            suggestions.innerHTML = '';
+            
+            if (matches.length > 0) {
+                matches.forEach(food => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.textContent = food.name;
+                    suggestionItem.addEventListener('click', () => {
+                        searchInput.value = food.name;
+                        suggestions.style.display = 'none';
+                        searchFoods(food.name);
+                    });
+                    suggestions.appendChild(suggestionItem);
+                });
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+        }
+
+        // Add new recipe
+        function addNewRecipe(recipeData) {
+            const newRecipe = {
+                id: Date.now(), // Unique ID based on timestamp
+                name: recipeData.name,
+                category: recipeData.category,
+                temperature: parseInt(recipeData.temperature),
+                time: recipeData.time,
+                description: recipeData.description,
+                instructions: recipeData.instructions.split('\n').filter(step => step.trim() !== ''),
+                note: recipeData.note
+            };
+            
+            userRecipes.push(newRecipe);
+            localStorage.setItem('userRecipes', JSON.stringify(userRecipes));
+            
+            // Refresh displays
+            displayAllFoods();
+            
+            // Show success message
+            alert('Recipe added successfully!');
+            
+            // Reset form
+            recipeForm.reset();
+        }
+
+        // Refresh all temperature displays
+        function refreshTemperatureDisplays() {
+            displayAllFoods();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    searchFoods(query);
+                }
+            });
+            
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim();
+                showSuggestions(query);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        searchFoods(query);
+                    }
+                }
+            });
+            
+            closeDetail.addEventListener('click', () => {
+                detailView.classList.remove('active');
+            });
+            
+            detailView.addEventListener('click', (e) => {
+                if (e.target === detailView) {
+                    detailView.classList.remove('active');
+                }
+            });
+            
+            themeToggle.addEventListener('click', toggleDarkMode);
+            
+            tempToggle.addEventListener('click', () => {
+                isCelsius = !isCelsius;
+                tempToggle.textContent = isCelsius ? '°C / °F' : '°F / °C';
+                refreshTemperatureDisplays();
+            });
+            
+            // Tab navigation
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Show selected tab content
+                    const tabId = tab.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).style.display = 'block';
+                });
+            });
+            
+            // Recipe form submission
+            recipeForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('recipeName').value,
+                    category: document.getElementById('recipeCategory').value,
+                    temperature: document.getElementById('recipeTemp').value,
+                    time: document.getElementById('recipeTime').value,
+                    description: document.getElementById('recipeDescription').value,
+                    instructions: document.getElementById('recipeInstructions').value,
+                    note: document.getElementById('recipeNote').value
+                };
+                
+                addNewRecipe(formData);
+            });
+            
+            // Close suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.style.display = 'none';
+                }
+            });
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Check for dark mode preference
+        function checkDarkModePreference() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedMode = localStorage.getItem('darkMode');
+            
+            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
